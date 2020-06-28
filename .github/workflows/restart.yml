@@ -1,0 +1,27 @@
+name: RESTART
+
+on:
+  push:
+    branches: 
+      - restart
+
+jobs:
+  restart:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install Cloud Foundry CLI
+      run: |
+        wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
+        echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+        sudo apt-get update
+        sudo apt-get install cf-cli
+
+    - name: Login IBM Cloud
+      run: |
+        cf login -a ${{secrets.API_SERVER}} -u ${{secrets.USERNAME}} -p ${{secrets.PASSWORD}}
+
+    - name: Restart App
+      run: |
+        cf restart "${{secrets.APPNAME}}"
+

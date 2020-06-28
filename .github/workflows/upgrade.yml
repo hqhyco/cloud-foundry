@@ -1,0 +1,81 @@
+name: UPGRADE
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  push:
+    branches: 
+    - master
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install Cloud Foundry CLI
+      run: |
+        wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
+        echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+        sudo apt-get update
+        sudo apt-get install cf-cli
+
+    - name: Login IBM Cloud
+      run: |
+        cf login -a ${{secrets.API_SERVER}} -u ${{secrets.USERNAME}} -p ${{secrets.PASSWORD}}
+
+    - name: Download Latest Release
+      run: |
+        wget -q https://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-linux-64.zip
+        unzip v2ray-linux-64.zip v2ray v2ctl
+        rm -rf v2ray-linux-64.zip
+        chmod 700 v2ray v2ctl
+        
+    - name: Write configuration
+      run: |
+        cat > config.json << EOF
+        {
+          "inbounds": [
+            {
+              "port": 8080,
+              "protocol": "vmess",
+              "settings": {
+                "clients": [
+                  {
+                    "id": "${{secrets.UUID}}",
+                    "alterId": ${{secrets.ALTER_ID}}
+                  }
+                ]
+              },
+              "streamSettings": {
+                "network":"ws",
+                "wsSettings": {
+                  "path": "${{secrets.WSPATH}}"
+                }
+              }
+            }
+          ],
+          "outbounds": [
+            {
+              "protocol": "freedom",
+              "settings": {}
+            }
+          ]
+        }
+        EOF
+
+    - name: Write manifest
+      run: |
+        cat > manifest.yml << EOF
+        applications:
+        - name: ${{secrets.APPNAME}}
+          memory: 128M
+          random-route: true
+          command: ./v2ray
+          buildpacks:	
+          - binary_buildpack
+        EOF
+
+    - name: Push
+      run: |
+        cf push
+        

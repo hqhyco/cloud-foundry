@@ -19,3 +19,21 @@ Settings >  Secrets
 设置完毕后, 每周一凌晨0点, 都会下载最新的 `v2ray` 推送到 `IBM` 云上。
 
 ## 定时重启
+
+如果已经部署过, 不想每周升级。
+
+请删除 `.github/workflows/upgrade.yml` 文件。
+
+Settings >  Secrets
+
+添加
+
+- API_SERVER: `https://api.us-south.cf.cloud.ibm.com`
+- USERNAME: 账号
+- PASSWORD: 密码
+- APPNAME: 你应用名称
+
+修改
+
+`.github/workflows/restart.yml` 文件
+

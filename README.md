@@ -33,7 +33,24 @@ Settings >  Secrets
 - PASSWORD: 密码
 - APPNAME: 你应用名称
 
-修改
+修改 `.github/workflows/restart.yml` 文件
 
-`.github/workflows/restart.yml` 文件
+```
+on:
+  push:
+    branches: 
+      - restart
+```
 
+为
+
+```
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  push:
+    branches: 
+    - master
+```
+
+设置完毕后, 每周一凌晨0点, 都会重新启动 v2ray.

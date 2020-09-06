@@ -16,4 +16,6 @@ Settings >  Secrets
 - ALTER_ID: 额外ID, 建议使用 `0`
 - WSPATH: 路径, 建议使用 `/`
 
+设置完毕后, 每周一凌晨0点, 都会下载最新的 `v2ray` 推送到 `IBM` 云上。
+
 ## 定时重启

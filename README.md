@@ -1,6 +1,6 @@
 # IBM Cloud Foundry
 
-## 部署 V2ray 
+## 部署 V2ray
 
 fork 本项目
 

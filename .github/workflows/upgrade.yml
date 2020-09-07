@@ -68,7 +68,7 @@ jobs:
         cat > manifest.yml << EOF
         applications:
         - name: ${{secrets.APPNAME}}
-          memory: 128M
+          memory: 256M
           random-route: true
           command: ./v2ray
           buildpacks:	

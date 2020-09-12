@@ -25,41 +25,36 @@ jobs:
 
     - name: Download Latest Release
       run: |
-        wget -q https://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-linux-64.zip
-        unzip v2ray-linux-64.zip v2ray v2ctl
-        rm -rf v2ray-linux-64.zip
-        chmod 700 v2ray v2ctl
+        wget -q https://github.com/p4gefau1t/trojan-go/releases/download/v0.8.2/trojan-go-linux-amd64.zip
+        unzip trojan-go-linux-amd64.zip trojan-go
+        rm -rf trojan-go-linux-amd64.zip
+        chmod 700 trojan-go
         
     - name: Write configuration
       run: |
         cat > config.json << EOF
         {
-          "inbounds": [
-            {
-              "port": 8080,
-              "protocol": "vmess",
-              "settings": {
-                "clients": [
-                  {
-                    "id": "${{secrets.UUID}}",
-                    "alterId": ${{secrets.ALTER_ID}}
-                  }
-                ]
-              },
-              "streamSettings": {
-                "network":"ws",
-                "wsSettings": {
-                  "path": "${{secrets.WSPATH}}"
-                }
-              }
-            }
+          "run_type": "server",
+          "local_addr": "0.0.0.0",
+          "local_port": 8080,
+          "remote_addr": "www.foxzc.com",
+          "remote_port": 80,
+          "log_level": 3,
+          "password": [
+            "123456"
           ],
-          "outbounds": [
-            {
-              "protocol": "freedom",
-              "settings": {}
-            }
-          ]
+          "transport_plugin": {
+            "enabled": true,
+            "type": "plaintext"
+          },
+          "router": {
+            "enabled": false
+          },
+          "websocket": {
+            "enabled": true,
+            "path": "/foxzc",
+            "hostname": "foxzc.us-south.cf.appdomain.cloud"
+          }
         }
         EOF
 
@@ -70,7 +65,7 @@ jobs:
         - name: ${{secrets.APPNAME}}
           memory: 256M
           random-route: true
-          command: ./v2ray
+          command: ./trojan-go
           buildpacks:	
           - binary_buildpack
         EOF

@@ -53,7 +53,7 @@ jobs:
           "websocket": {
             "enabled": true,
             "path": "/foxzc",
-            "hostname": "foxzc.us-south.cf.appdomain.cloud"
+            "hostname": "zchfox.us-south.cf.appdomain.cloud"
           }
         }
         EOF
